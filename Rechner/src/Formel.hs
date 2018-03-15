@@ -56,11 +56,13 @@ instance Fractional a => Fractional (Formel a) where
 
 
 instance Show a => Show (Formel a) where
-  showsPrec d (Konstante n)   = showParen (d > 10) $ showsPrec 0 n
-  showsPrec d (BinOp Add a b) = showParen (d > 6)  $ showsPrec 6 a . showString " + " . showsPrec 7 b
-  showsPrec d (BinOp Sub a b) = showParen (d > 6)  $ showsPrec 6 a . showString " - " . showsPrec 7 b
-  showsPrec d (BinOp Mul a b) = showParen (d > 7)  $ showsPrec 7 a . showString " * " . showsPrec 8 b
-  showsPrec d (BinOp Div a b) = showParen (d > 7)  $ showsPrec 7 a . showString " / " . showsPrec 8 b
+  showsPrec p formel = showString "Formel \"" . showsPrec' p formel . showString "\""
+    where
+      showsPrec' d (Konstante n)   = showParen (d > 10) $ showsPrec 0 n
+      showsPrec' d (BinOp Add a b) = showParen (d > 6)  $ showsPrec' 6 a . showString " + " . showsPrec' 7 b
+      showsPrec' d (BinOp Sub a b) = showParen (d > 6)  $ showsPrec' 6 a . showString " - " . showsPrec' 7 b
+      showsPrec' d (BinOp Mul a b) = showParen (d > 7)  $ showsPrec' 7 a . showString " * " . showsPrec' 8 b
+      showsPrec' d (BinOp Div a b) = showParen (d > 7)  $ showsPrec' 7 a . showString " / " . showsPrec' 8 b
 
 ---------------------------------------------------------------------
 -- Formeln parsen

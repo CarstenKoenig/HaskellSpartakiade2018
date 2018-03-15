@@ -40,28 +40,29 @@ spec = do
 
    describe "Beim `show` von Formeln" $ do
      prop "werden Konstanten direkt ausgegeben" $ \ (n :: Double) ->
-       show (konst n) `shouldBe` show n
+       show (konst n) `shouldBe` mitFormel (show n)
      prop "werden Additionen mit + angezeigt" $ \ (a :: Double) (b :: Double) ->
-       show (konst a + konst b) `shouldBe` show a ++ " + " ++ show b
+       show (konst a + konst b) `shouldBe` mitFormel (show a ++ " + " ++ show b)
      prop "werden Subtraktionen mit - angezeigt" $ \ (a :: Double) (b :: Double) ->
-       show (konst a - konst b) `shouldBe` show a ++ " - " ++ show b
+       show (konst a - konst b) `shouldBe` mitFormel (show a ++ " - " ++ show b)
      prop "werden Multiplikationen mit * angezeigt" $ \ (a :: Double) (b :: Double) ->
-       show (konst a * konst b) `shouldBe` show a ++ " * " ++ show b
+       show (konst a * konst b) `shouldBe` mitFormel (show a ++ " * " ++ show b)
      prop "werden Divisionen mit / angezeigt" $ \ (a :: Double) (b :: Double) ->
-       show (konst a / konst b) `shouldBe` show a ++ " / " ++ show b
+       show (konst a / konst b) `shouldBe` mitFormel (show a ++ " / " ++ show b)
      prop "keine Klammern wegen Punkt vor Strich" $ \ (a :: Double) (b :: Double) (c :: Double) ->
-       show (konst a * konst b + konst c) `shouldBe` show a ++ " * " ++ show b ++ " + " ++ show c
+       show (konst a * konst b + konst c) `shouldBe` mitFormel (show a ++ " * " ++ show b ++ " + " ++ show c)
      prop "keine Klammern bei Mult/Add" $ \ (a :: Double) (b :: Double) (c :: Double) ->
-       show (konst a * (konst b + konst c)) `shouldBe` show a ++ " * (" ++ show b ++ " + " ++ show c ++ ")"
+       show (konst a * (konst b + konst c)) `shouldBe` mitFormel (show a ++ " * (" ++ show b ++ " + " ++ show c ++ ")")
      prop "Subtraktion wird links-assoziativ ausgegeben" $ \ (a :: Double) (b :: Double) (c :: Double) ->
-       show (konst a - konst b - konst c) `shouldBe` show a ++ " - " ++ show b ++ " - " ++ show c
+       show (konst a - konst b - konst c) `shouldBe` mitFormel (show a ++ " - " ++ show b ++ " - " ++ show c)
      prop "Subtraktion wird links-assoziativ geklammert" $ \ (a :: Double) (b :: Double) (c :: Double) ->
-       show (konst a - (konst b - konst c)) `shouldBe` show a ++ " - (" ++ show b ++ " - " ++ show c ++ ")"
+       show (konst a - (konst b - konst c)) `shouldBe` mitFormel (show a ++ " - (" ++ show b ++ " - " ++ show c ++ ")")
      prop "Division wird links-assoziativ ausgegeben" $ \ (a :: Double) (b :: Double) (c :: Double) ->
-       show (konst a / konst b / konst c) `shouldBe` show a ++ " / " ++ show b ++ " / " ++ show c
+       show (konst a / konst b / konst c) `shouldBe` mitFormel (show a ++ " / " ++ show b ++ " / " ++ show c)
      prop "Division wird links-assoziativ geklammert" $ \ (a :: Double) (b :: Double) (c :: Double) ->
-       show (konst a / (konst b / konst c)) `shouldBe` show a ++ " / (" ++ show b ++ " / " ++ show c ++ ")"
-
+       show (konst a / (konst b / konst c)) `shouldBe` mitFormel (show a ++ " / (" ++ show b ++ " / " ++ show c ++ ")")
+   where
+     mitFormel s = "Formel \"" ++ s ++ "\""
 
 shouldApproxBe :: Double -> Double -> Bool
 shouldApproxBe a b = abs (a - b) < 0.0001 
