@@ -50,3 +50,5 @@ char praed = Parser $ \case
   _               -> Nothing
 
 
+instance Functor Parser where
+  fmap f p = undefined

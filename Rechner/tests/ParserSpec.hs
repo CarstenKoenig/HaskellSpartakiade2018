@@ -33,3 +33,12 @@ spec = do
 
      it "runParser digit \"xy\" liefert Nothing" $
        runParser digit "xy" `shouldBe` Nothing
+
+     describe "Parser sind Funktoren" $ do
+       it "runParser (fmap (read . \\c -> [c]) digit) \"234\" liefert Int 2 und \"34\" als Rest" $
+         runParser (fmap (read . \c -> [c]) digit) "234" `shouldBe` Just (2, "34")
+       prop "fmap id ändert den Parser nicht" $ \s ->
+         runParser (fmap id digit) s `shouldBe` runParser digit s
+       prop "fmap bildet Kompositionen auf Kompositionen ab" $ \s ->
+         runParser (fmap ((read :: String -> Int) . \c -> [c]) digit) s
+         `shouldBe` runParser (fmap read . fmap (\c -> [c]) $ digit) s
