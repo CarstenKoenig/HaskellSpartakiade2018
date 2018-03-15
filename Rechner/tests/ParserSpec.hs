@@ -48,3 +48,17 @@ spec = do
          runParser (try digit) "123" `shouldBe` Just (Just '1', "23")
        it "soll aber mit Nothing erfolgreich sein und keine Eingabe konsumieren, falls der getestete Parser fehlschlägt" $
          runParser (try digit) "xy" `shouldBe` Just (Nothing, "xy")
+
+
+     describe "Parser sind Appliatives" $ do
+       it "runParser (pure (\\c1 c2 -> [c1,c2]) <*> digit <*> digit) \"234\" liefert \"12\" und \"3\" als Rest" $
+         runParser (pure (\c1 c2 -> [c1,c2]) <*> digit <*> digit) "123" `shouldBe` Just ("12", "3")
+       prop "erfüllt das identity Gesetz" $ \s ->
+         runParser (pure id <*> digit) s `shouldBe` runParser digit s
+       prop "erfüllt das Homomorphismus Gesetz" $ \s ->
+         runParser (pure (+1) <*> pure 2) s `shouldBe` runParser (pure (2+1)) s
+       prop "erfüllt das Interchange Gesetz" $ \s ->
+         runParser (fmap (:) digit <*> pure "x") s `shouldBe` runParser (pure ($ "x") <*> fmap (:) digit) s
+       prop "erfüllt das Composition Gesetz" $ \s ->
+         runParser (fmap (\a cont -> cont a) digit <*> (fmap (\b c a -> [a,b,c]) digit <*> digit)) s
+         `shouldBe` runParser (pure (.) <*> fmap (\a cont -> cont a) digit <*> fmap (\b c a -> [a,b,c]) digit <*> digit) s

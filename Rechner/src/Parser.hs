@@ -62,3 +62,9 @@ try pa = Parser $ \s ->
     Nothing      -> Just (Nothing, s)
     Just (a, s') -> Just (Just a, s')
 
+
+instance Applicative Parser where
+  pure = undefined
+  pf <*> pa = undefined
+
+
