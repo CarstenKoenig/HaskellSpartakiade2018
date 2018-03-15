@@ -18,6 +18,27 @@ main = hspec spec
 spec :: Spec
 spec = do
 
+   describe "Beim Parsen von Formeln" $ do
+     it "werden Konstanten erkannt" $
+       parse "42" `shouldBe` Just (konst 42)
+     it "Addition wird erkannt" $
+       parse "11+13" `shouldBe` Just (konst 11 + konst 13)
+     it "Addition-Kette wird erkannt" $
+       parse "1+2+3" `shouldBe` Just (konst 1 + konst 2 + konst 3)
+     it "Subtraktion-Kette wird erkannt" $
+       parse "1-2-3" `shouldBe` Just (konst 1 - konst 2 - konst 3)
+     it "Multiplikation-Kette wird erkannt" $
+       parse "1*2*3" `shouldBe` Just (konst 1 * konst 2 * konst 3)
+     it "Division-Kette wird erkannt" $
+       parse "1/2/3" `shouldBe` Just (konst 1 / konst 2 / konst 3)
+     it "Punkt vor Strich wird erkannt" $
+       parse "1*2+3" `shouldBe` Just ((konst 1 * konst 2) + konst 3)
+     it "Klammern werden erkannt" $
+       parse "1*(2+3)" `shouldBe` Just (konst 1 * (konst 2 + konst 3))
+     it "Whitespace ist kein Problem" $
+       parse "1  *( 2+ 3 )" `shouldBe` Just (konst 1 * (konst 2 + konst 3))
+
+
    describe "Beim Auswerten von Formel" $ do
      prop "werden Konstanten auf ihren Wert berechnet" $ \ (n :: Double) ->
        eval (konst n) `shouldApproxBe` n
