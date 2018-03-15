@@ -64,7 +64,10 @@ try pa = Parser $ \s ->
 
 
 instance Applicative Parser where
-  pure = undefined
-  pf <*> pa = undefined
+  pure = succeed
+  pf <*> pa = Parser $ \s -> do
+    (f, s') <- runParser pf s
+    (x, s'') <- runParser pa s'
+    return (f x, s'')
 
 
