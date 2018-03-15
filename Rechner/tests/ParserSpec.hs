@@ -5,7 +5,6 @@ module ParserSpec (main, spec) where
 
 import Test.Hspec
 import Test.Hspec.QuickCheck
-import Test.QuickCheck.Modifiers
 import Data.Monoid ((<>))
 import Parser
 

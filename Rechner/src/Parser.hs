@@ -23,7 +23,6 @@ module Parser
 
 import Control.Applicative (Alternative (..))
 import Data.Char (isDigit)
-import Data.Semigroup (Semigroup (..), (<>))
 
 
 parse :: Parser a -> String -> Maybe a
@@ -107,16 +106,23 @@ instance Monad Parser where
 
 
 between :: Parser l -> Parser r -> Parser a -> Parser a
-between pl pr pa = undefined
+between pl pr pa = pl *> pa <* pr
 
 
 whitespace :: Parser ()
-whitespace = undefined
+whitespace = return () <* many (char (`elem` " \n\t\r"))
 
 
 chainl1 :: forall a . Parser a -> Parser (a -> a -> a) -> Parser a
-chainl1 pa pop = undefined
+chainl1 pa pop = pa >>= more
+  where
+    more a =
+      do
+        op <- pop
+        a' <- pa
+        more (a `op` a')
+      <|> succeed a
 
 
 chainl :: Parser a -> Parser (a -> a -> a) -> a -> Parser a
-chainl pa pop va = undefined
+chainl pa pop va = chainl1 pa pop <|> succeed va
