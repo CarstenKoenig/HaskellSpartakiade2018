@@ -90,3 +90,12 @@ oneOf :: [Parser a] -> Parser a
 oneOf = foldr (<|>) empty
 
 
+instance Monoid a => Monoid (Parser a) where
+  mempty          = undefined
+  p1 `mappend` p2 = undefined
+
+
+instance Monad Parser where
+  return     = undefined
+  pa >>= fpb = undefined
+

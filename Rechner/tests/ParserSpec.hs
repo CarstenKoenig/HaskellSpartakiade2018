@@ -6,7 +6,7 @@ module ParserSpec (main, spec) where
 import Test.Hspec
 import Test.Hspec.QuickCheck
 import Test.QuickCheck.Modifiers
-
+import Data.Monoid ((<>))
 import Parser
 
 -- `main` is here so that this module can be run from GHCi on its own.  It is
@@ -78,3 +78,22 @@ spec = do
          runParser (oneOf [digit, char (== 'x')]) "x" `shouldBe` Just ('x', "")
        it "oneOf [digit, char (== 'x')] erkennt 'y' nicht" $
          runParser (oneOf [digit, char (== 'x')]) "y" `shouldBe` Nothing
+
+
+     describe "Parsers Monoid-Instanz" $ do
+       it "many digit <> many (char (== 'x')) erkennt \"123xx\"" $
+         runParser (many digit <> many (char (== 'x'))) "123xxuuu" `shouldBe` Just ("123xx", "uuu")
+
+     describe "Parsers sind Monaden" $ do
+       it "computation mit Entscheidung funktioniert" $ do
+         runParser decide "1x" `shouldBe` Just ("ok-x", "")
+         runParser decide "2y" `shouldBe` Just ("ok-y", "")
+         runParser decide "1y" `shouldBe` Nothing
+         runParser decide "3z" `shouldBe` Nothing
+         where
+           decide = do
+             d <- digit
+             case d of
+               '1' -> char (== 'x') *> pure "ok-x"
+               '2' -> char (== 'y') *> pure "ok-y"
+               _   -> Parser.fail
