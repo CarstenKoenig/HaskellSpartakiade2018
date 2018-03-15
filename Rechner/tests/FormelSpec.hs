@@ -17,13 +17,26 @@ main = hspec spec
 
 spec :: Spec
 spec = do
-  describe "Wie funktioniert das hier?" $ do
-    it "Ein erfolgreicher Test" $
-      4 + 5 `shouldBe` 9
-    it "Ein fehlschlagender Test" $
-      4 + 5 `shouldBe` 10
-    prop "Ein eigenschaftsbasierender Test" $ \ (n :: Int) ->
-      2 * n `shouldBe` n + n
+   describe "Beim Auswerten von Formel" $ do
+    prop "werden Konstanten auf ihren Wert berechnet" $ \ (n :: Double) ->
+      eval (konst n) `shouldApproxBe` n
+    prop "werden Additionen zweier Konstanten korrekt berechnet" $ \ (a :: Double) (b :: Double) ->
+      eval (konst a + konst b) `shouldApproxBe` (a + b)
+    prop "werden Subtraktionen zweier Konstanten korrekt berechnet" $ \ (a :: Double) (b :: Double) ->
+      eval (konst a - konst b) `shouldApproxBe` (a - b)
+    prop "werden Multiplikationen zweier Konstanten korrekt berechnet" $ \ (a :: Double) (b :: Double) ->
+      eval (konst a * konst b) `shouldApproxBe` (a * b)
+    prop "werden Divisionen zweier Konstanten korrekt berechnet" $ \ (a :: Double) (NonZero b :: NonZero Double) ->
+      eval (konst a / konst b) `shouldApproxBe` (a / b)
+    prop "ist die Subtraktion links-assoziativ" $ \ (a :: Double) (b :: Double) (c :: Double) ->
+      eval (konst a - konst b - konst c) `shouldApproxBe` ((a - b) - c)
+    prop "ist die Division links-assoziativ" $ \ (a :: Double) (NonZero b :: NonZero Double) (NonZero c :: NonZero Double) ->
+      eval (konst a / konst b / konst c) `shouldApproxBe` ((a / b) / c)
+    prop "gilt Punkt-Vor-Strich" $ \ (a :: Double) (b :: Double) (c :: Double) ->
+      eval (konst a * konst b + konst c) `shouldApproxBe` (a * b + c)
+    prop "gilt das Distributivgesetz" $ \ (a :: Double) (b :: Double) (c :: Double) ->
+      eval (konst a * (konst b + konst c)) `shouldApproxBe` (a * b + a * c)
 
-  where
-    shouldApproxBe a b = abs (a - b) < 0.0001 
+
+shouldApproxBe :: Double -> Double -> Bool
+shouldApproxBe a b = abs (a - b) < 0.0001 
