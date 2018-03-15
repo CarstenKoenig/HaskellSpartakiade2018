@@ -51,7 +51,5 @@ char praed = Parser $ \case
 
 
 instance Functor Parser where
-  fmap f p = Parser $ \s ->
-    case runParser p s of
-      Just (x, rest) -> Just (f x, rest)
-      Nothing        -> Nothing
+  fmap f p =
+    Parser $ fmap (\(x, rest) -> (f x, rest)) . runParser p
