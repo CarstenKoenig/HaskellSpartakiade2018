@@ -42,3 +42,9 @@ spec = do
        prop "fmap bildet Kompositionen auf Kompositionen ab" $ \s ->
          runParser (fmap ((read :: String -> Int) . \c -> [c]) digit) s
          `shouldBe` runParser (fmap read . fmap (\c -> [c]) $ digit) s
+
+     describe "der try - Kombinator" $ do
+       it "liefert ein zustätzliches Just, falls der getestete Parser erfolgreich ist" $
+         runParser (try digit) "123" `shouldBe` Just (Just '1', "23")
+       it "soll aber mit Nothing erfolgreich sein und keine Eingabe konsumieren, falls der getestete Parser fehlschlägt" $
+         runParser (try digit) "xy" `shouldBe` Just (Nothing, "xy")

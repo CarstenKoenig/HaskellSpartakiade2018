@@ -11,6 +11,7 @@ module Parser
   , one
   , digit
   , char
+  , try
   ) where
 
 import Control.Applicative (Alternative (..))
@@ -53,3 +54,11 @@ char praed = Parser $ \case
 instance Functor Parser where
   fmap f p =
     Parser $ fmap (\(x, rest) -> (f x, rest)) . runParser p
+
+
+try :: Parser a -> Parser (Maybe a)
+try pa = Parser $ \s ->
+  case runParser pa s of
+    Nothing      -> Just (Nothing, s)
+    Just (a, s') -> Just (Just a, s')
+
