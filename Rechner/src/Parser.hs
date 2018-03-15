@@ -10,6 +10,7 @@ module Parser
   , Parser.fail
   , one
   , digit
+  , char
   ) where
 
 import Control.Applicative (Alternative (..))
@@ -36,13 +37,16 @@ fail = Parser $ const Nothing
 
 
 one :: Parser Char
-one = Parser $ \case
-  (c:rest) -> Just (c, rest)
-  _        -> Nothing
+one = char (const True)
 
 
 digit :: Parser Char
-digit = Parser $ \case
-  (c:rest) | isDigit c -> Just (c, rest)
-  _                    -> Nothing
+digit = char isDigit
+
+
+char :: (Char -> Bool) -> Parser Char
+char praed = Parser $ \case
+  (c:s) | praed c -> Just (c, s)
+  _               -> Nothing
+
 
