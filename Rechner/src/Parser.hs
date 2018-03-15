@@ -12,6 +12,9 @@ module Parser
   , digit
   , char
   , try
+  , oneOf
+  , many
+  , many1
   ) where
 
 import Control.Applicative (Alternative (..))
@@ -69,5 +72,18 @@ instance Applicative Parser where
     (f, s') <- runParser pf s
     (x, s'') <- runParser pa s'
     return (f x, s'')
+
+
+instance Alternative Parser where
+  empty     = undefined
+  p1 <|> p2 = undefined
+
+
+many1 :: Parser a -> Parser [a]
+many1 = some
+
+
+oneOf :: [Parser a] -> Parser a
+oneOf = foldr (<|>) empty
 
 

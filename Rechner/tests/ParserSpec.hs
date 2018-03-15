@@ -62,3 +62,19 @@ spec = do
        prop "erfüllt das Composition Gesetz" $ \s ->
          runParser (fmap (\a cont -> cont a) digit <*> (fmap (\b c a -> [a,b,c]) digit <*> digit)) s
          `shouldBe` runParser (pure (.) <*> fmap (\a cont -> cont a) digit <*> fmap (\b c a -> [a,b,c]) digit <*> digit) s
+
+     describe "many Parser" $ do
+       it "many digit erkennt alle Ziffern in String" $
+         runParser (many digit) "1234xy" `shouldBe` Just ("1234", "xy")
+       it "many digit erkennt alle auch 0-Ziffern in String" $
+         runParser (many digit) "xy" `shouldBe` Just ("", "xy")
+       it "many1 digit erkennt nicht 0-Ziffern in String" $
+         runParser (many1 digit) "xy" `shouldBe` Nothing
+
+     describe "oneOf Parser" $ do
+       it "oneOf [digit, char (== 'x')] erkennt Ziffer" $
+         runParser (oneOf [digit, char (== 'x')]) "1" `shouldBe` Just ('1', "")
+       it "oneOf [digit, char (== 'x')] erkennt 'x'" $
+         runParser (oneOf [digit, char (== 'x')]) "x" `shouldBe` Just ('x', "")
+       it "oneOf [digit, char (== 'x')] erkennt 'y' nicht" $
+         runParser (oneOf [digit, char (== 'x')]) "y" `shouldBe` Nothing
