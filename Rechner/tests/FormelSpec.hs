@@ -17,6 +17,7 @@ main = hspec spec
 
 spec :: Spec
 spec = do
+
    describe "Beim Auswerten von Formel" $ do
      prop "werden Konstanten auf ihren Wert berechnet" $ \ (n :: Double) ->
        eval (konst n) `shouldApproxBe` n
