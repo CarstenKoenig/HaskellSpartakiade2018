@@ -28,16 +28,21 @@ newtype Parser a
 
 
 succeed :: a -> Parser a
-succeed x = undefined
+succeed x = Parser $ \s -> Just (x, s)
 
 
 fail :: Parser a
-fail = undefined
+fail = Parser $ const Nothing
 
 
 one :: Parser Char
-one = undefined
+one = Parser $ \case
+  (c:rest) -> Just (c, rest)
+  _        -> Nothing
 
 
 digit :: Parser Char
-digit = undefined
+digit = Parser $ \case
+  (c:rest) | isDigit c -> Just (c, rest)
+  _                    -> Nothing
+
