@@ -91,11 +91,13 @@ oneOf = foldr (<|>) empty
 
 
 instance Monoid a => Monoid (Parser a) where
-  mempty          = undefined
-  p1 `mappend` p2 = undefined
+  mempty          = succeed mempty
+  p1 `mappend` p2 = mappend <$> p1 <*> p2
 
 
 instance Monad Parser where
-  return     = undefined
-  pa >>= fpb = undefined
+  return     = pure
+  pa >>= fpb = Parser $ \s -> do
+    (a, s') <- runParser pa s
+    runParser (fpb a) s'
 
