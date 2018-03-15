@@ -75,8 +75,11 @@ instance Applicative Parser where
 
 
 instance Alternative Parser where
-  empty     = undefined
-  p1 <|> p2 = undefined
+  empty     = Parser.fail
+  p1 <|> p2 = Parser $ \s ->
+    case runParser p1 s of
+      ok@(Just _) -> ok
+      Nothing     -> runParser p2 s
 
 
 many1 :: Parser a -> Parser [a]
