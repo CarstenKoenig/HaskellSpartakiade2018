@@ -1,0 +1,40 @@
+name:                Rechner
+version:             0.1.0.0
+synopsis:            Haskell Workshop @Spartakiade 2018
+homepage:            https://github.com/CarstenKoenig/HaskellSpartakiade2018#readme.md
+license:             MIT
+author:              Carsten Koenig
+maintainer:          Carsten.Koenig@hotmail.de
+copyright:           none
+category:            fun
+
+ghc-options: -Wall
+
+dependencies:
+  - base >= 4.7 && < 5
+
+
+library:
+  source-dirs:        src
+
+
+executables:
+  Rechner:
+    source-dirs:      app
+    main:             Main.hs
+    dependencies:
+      - Rechner
+      - lucid
+      - scotty
+      - text
+      - wai
+      - wai-middleware-static
+
+tests:
+  spec:
+    source-dirs:      tests
+    main:             Spec.hs
+    dependencies:
+      - hspec
+      - QuickCheck
+      - Rechner
