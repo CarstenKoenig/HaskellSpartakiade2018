@@ -26,3 +26,4 @@ cabal.project.local
 .dir-locals.el
 
 Workshop.md
+*.pdf

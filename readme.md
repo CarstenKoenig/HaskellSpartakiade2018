@@ -9,6 +9,10 @@ Twitter: http://twitter.com/spartakiade_org
 
 ---
 
+[Workshop Material](./Workshop.md)
+
+---
+
 ## Linksammlung
 
 ### Tools
