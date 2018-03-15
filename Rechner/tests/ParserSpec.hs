@@ -86,14 +86,34 @@ spec = do
 
      describe "Parsers sind Monaden" $ do
        it "computation mit Entscheidung funktioniert" $ do
+         let decide = do
+               d <- digit
+               case d of
+                 '1' -> char (== 'x') *> pure "ok-x"
+                 '2' -> char (== 'y') *> pure "ok-y"
+                 _   -> Parser.fail
          runParser decide "1x" `shouldBe` Just ("ok-x", "")
          runParser decide "2y" `shouldBe` Just ("ok-y", "")
          runParser decide "1y" `shouldBe` Nothing
          runParser decide "3z" `shouldBe` Nothing
-         where
-           decide = do
-             d <- digit
-             case d of
-               '1' -> char (== 'x') *> pure "ok-x"
-               '2' -> char (== 'y') *> pure "ok-y"
-               _   -> Parser.fail
+
+     describe "whitespace erkennung" $ do
+       it "erkennt Leerzeichen" $
+         runParser whitespace "   xyz" `shouldBe` Just ((), "xyz")
+       it "erkennt Tabs" $
+         runParser whitespace "\txyz" `shouldBe` Just ((), "xyz")
+       it "erkennt \\n" $
+         runParser whitespace "\nxyz" `shouldBe` Just ((), "xyz")
+       it "erkennt \\r" $
+         runParser whitespace "\rxyz" `shouldBe` Just ((), "xyz")
+       it "erkennt eine Mischung aus allen" $
+         runParser whitespace "\t    \r\nxyz" `shouldBe` Just ((), "xyz")
+
+     describe "between Kombinator" $
+       it "erkennt digit zwischen Klammern" $
+         runParser (between (char (== '(')) (char (== ')')) digit) "(4)" `shouldBe` Just ('4', "")
+
+
+     describe "chainl1 Kombinator" $
+       it "erkennt digits getrennt von ':'" $
+         runParser (chainl1 (fmap pure digit) (char (== ':') *> pure (++))) "1:2:3:4xyz" `shouldBe` Just ("1234", "xyz")

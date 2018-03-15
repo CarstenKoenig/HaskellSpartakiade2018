@@ -15,6 +15,10 @@ module Parser
   , oneOf
   , many
   , many1
+  , chainl
+  , chainl1
+  , between
+  , whitespace
   ) where
 
 import Control.Applicative (Alternative (..))
@@ -101,3 +105,18 @@ instance Monad Parser where
     (a, s') <- runParser pa s
     runParser (fpb a) s'
 
+
+between :: Parser l -> Parser r -> Parser a -> Parser a
+between pl pr pa = undefined
+
+
+whitespace :: Parser ()
+whitespace = undefined
+
+
+chainl1 :: forall a . Parser a -> Parser (a -> a -> a) -> Parser a
+chainl1 pa pop = undefined
+
+
+chainl :: Parser a -> Parser (a -> a -> a) -> a -> Parser a
+chainl pa pop va = undefined
